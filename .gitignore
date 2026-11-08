@@ -1,0 +1,12 @@
+# Empiezo mis comentarios con # para que Git los ignore.
+# Uso * para cualquier nombre de archivo; por ejemplo, *.mdf
+# se refiere a todos los archivos que terminan en .mdf.
+
+# Excluyo los archivos de datos de SQL Server.
+*.mdf
+
+# Excluyo los archivos donde SQL Server registra los cambios.
+*.ldf
+
+# Excluyo las copias de seguridad de SQL Server.
+*.bak

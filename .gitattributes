@@ -1,0 +1,16 @@
+# Empiezo mis comentarios con # para que Git los ignore.
+
+# Uso * para aplicar esta regla a todos los archivos.
+# Con text=auto, indico a Git que detecte automáticamente qué archivos son texto.
+# Al guardarlos en Git, unifica los saltos de línea, que separan una línea de otra.
+# Así evito cambios que solo se deban a esas separaciones.
+* text=auto
+
+# En *.docx, * representa cualquier nombre y .docx identifica los archivos de Word.
+# Con binary, indico a Git que no cambie sus saltos de línea
+# ni compare o mezcle su contenido como si fuera texto.
+*.docx binary
+
+# Uso *.png para las imágenes de mis diagramas.
+# Aplico binary para que Git tampoco las trate como texto.
+*.png binary
