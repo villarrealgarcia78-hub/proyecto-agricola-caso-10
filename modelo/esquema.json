@@ -1,0 +1,752 @@
+{
+  "titulo": "Caso 10. Gestión agrícola y producción de cultivos",
+  "entrega": "Parte I - diseño de la base de datos y diccionario",
+  "fecha_entrega": "2026-11-06",
+  "estado": "Diseño propuesto, sin ejecución SQL",
+  "convenciones": {
+    "nulabilidad": "Todas las columnas propuestas son NOT NULL.",
+    "area": "hectáreas (ha)",
+    "costo": "pesos colombianos (COP)",
+    "cosecha": "kg o t; consultas normalizadas a kilogramos (kg)",
+    "borrado": "Sin borrado en cascada; conservar referencias."
+  },
+  "tablas": [
+    {
+      "nombre": "Predio",
+      "significado": "Propiedad agrícola que contiene lotes.",
+      "reglas_fuente": [
+        1
+      ],
+      "columnas": [
+        {
+          "nombre": "id_predio",
+          "tipo_sql": "INT",
+          "significado": "Identificador interno del predio.",
+          "nulo": false,
+          "clave": "PK",
+          "referencia": null,
+          "regla": "Identificador técnico generado automáticamente; puede presentar saltos. Propuesto IDENTITY(1,1).",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "codigo_predio",
+          "tipo_sql": "VARCHAR(20)",
+          "significado": "Código con el que se identifica el predio.",
+          "nulo": false,
+          "clave": "UQ",
+          "referencia": null,
+          "regla": "Único y sin texto vacío.",
+          "ejemplo": "P01"
+        },
+        {
+          "nombre": "nombre",
+          "tipo_sql": "NVARCHAR(100)",
+          "significado": "Nombre del predio.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Sin texto vacío.",
+          "ejemplo": "El Arrayán"
+        },
+        {
+          "nombre": "area_ha",
+          "tipo_sql": "DECIMAL(12,2)",
+          "significado": "Área total del predio en hectáreas.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Mayor que cero.",
+          "ejemplo": "12.00"
+        }
+      ],
+      "pk": [
+        "id_predio"
+      ]
+    },
+    {
+      "nombre": "Lote",
+      "significado": "Porción identificada de un predio.",
+      "reglas_fuente": [
+        1,
+        10
+      ],
+      "unicos": [
+        [
+          "id_predio",
+          "codigo_lote"
+        ]
+      ],
+      "columnas": [
+        {
+          "nombre": "id_lote",
+          "tipo_sql": "INT",
+          "significado": "Identificador interno del lote, único en la tabla.",
+          "nulo": false,
+          "clave": "PK",
+          "referencia": null,
+          "regla": "Identificador técnico generado automáticamente; puede presentar saltos. Propuesto IDENTITY(1,1).",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "id_predio",
+          "tipo_sql": "INT",
+          "significado": "Predio al que pertenece el lote.",
+          "nulo": false,
+          "clave": "FK",
+          "referencia": "Predio.id_predio",
+          "regla": "Debe existir en la tabla referenciada.",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "codigo_lote",
+          "tipo_sql": "VARCHAR(20)",
+          "significado": "Código del lote dentro de su predio.",
+          "nulo": false,
+          "clave": "UQ compuesta",
+          "referencia": null,
+          "regla": "Sin texto vacío; el par (id_predio, codigo_lote) es único.",
+          "ejemplo": "L01"
+        },
+        {
+          "nombre": "nombre",
+          "tipo_sql": "NVARCHAR(100)",
+          "significado": "Nombre que distingue al lote para las personas.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Sin texto vacío.",
+          "ejemplo": "La Loma"
+        },
+        {
+          "nombre": "area_ha",
+          "tipo_sql": "DECIMAL(12,2)",
+          "significado": "Área del lote en hectáreas.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Mayor que cero.",
+          "ejemplo": "2.00"
+        }
+      ],
+      "pk": [
+        "id_lote"
+      ]
+    },
+    {
+      "nombre": "Cultivo",
+      "significado": "Tipo de cultivo; no representa una siembra concreta.",
+      "reglas_fuente": [
+        2
+      ],
+      "columnas": [
+        {
+          "nombre": "id_cultivo",
+          "tipo_sql": "INT",
+          "significado": "Identificador interno del tipo de cultivo.",
+          "nulo": false,
+          "clave": "PK",
+          "referencia": null,
+          "regla": "Identificador técnico generado automáticamente; puede presentar saltos. Propuesto IDENTITY(1,1).",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "codigo_cultivo",
+          "tipo_sql": "VARCHAR(20)",
+          "significado": "Código del tipo de cultivo.",
+          "nulo": false,
+          "clave": "UQ",
+          "referencia": null,
+          "regla": "Único y sin texto vacío.",
+          "ejemplo": "C01"
+        },
+        {
+          "nombre": "nombre",
+          "tipo_sql": "NVARCHAR(100)",
+          "significado": "Nombre del tipo de cultivo.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Sin texto vacío.",
+          "ejemplo": "Maíz"
+        }
+      ],
+      "pk": [
+        "id_cultivo"
+      ]
+    },
+    {
+      "nombre": "Temporada",
+      "significado": "Periodo de referencia de la actividad agrícola.",
+      "reglas_fuente": [
+        2,
+        9
+      ],
+      "columnas": [
+        {
+          "nombre": "id_temporada",
+          "tipo_sql": "INT",
+          "significado": "Identificador interno de la temporada.",
+          "nulo": false,
+          "clave": "PK",
+          "referencia": null,
+          "regla": "Identificador técnico generado automáticamente; puede presentar saltos. Propuesto IDENTITY(1,1).",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "codigo_temporada",
+          "tipo_sql": "VARCHAR(20)",
+          "significado": "Código de la temporada.",
+          "nulo": false,
+          "clave": "UQ",
+          "referencia": null,
+          "regla": "Único y sin texto vacío.",
+          "ejemplo": "T2026A"
+        },
+        {
+          "nombre": "nombre",
+          "tipo_sql": "NVARCHAR(100)",
+          "significado": "Nombre del periodo.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Sin texto vacío.",
+          "ejemplo": "Primer semestre 2026"
+        },
+        {
+          "nombre": "fecha_inicio",
+          "tipo_sql": "DATE",
+          "significado": "Primer día de la temporada.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Menor o igual que fecha_fin.",
+          "ejemplo": "2026-01-01"
+        },
+        {
+          "nombre": "fecha_fin",
+          "tipo_sql": "DATE",
+          "significado": "Último día de la temporada.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Mayor o igual que fecha_inicio.",
+          "ejemplo": "2026-06-30"
+        }
+      ],
+      "pk": [
+        "id_temporada"
+      ]
+    },
+    {
+      "nombre": "CicloCultivo",
+      "significado": "Siembra concreta de un cultivo en un lote y una temporada.",
+      "reglas_fuente": [
+        3,
+        9,
+        10
+      ],
+      "columnas": [
+        {
+          "nombre": "id_ciclo",
+          "tipo_sql": "INT",
+          "significado": "Identificador interno de la siembra concreta.",
+          "nulo": false,
+          "clave": "PK",
+          "referencia": null,
+          "regla": "Identificador técnico generado automáticamente; puede presentar saltos. Propuesto IDENTITY(1,1).",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "id_lote",
+          "tipo_sql": "INT",
+          "significado": "Lote donde se desarrolla el ciclo.",
+          "nulo": false,
+          "clave": "FK",
+          "referencia": "Lote.id_lote",
+          "regla": "Debe existir en la tabla referenciada.",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "id_cultivo",
+          "tipo_sql": "INT",
+          "significado": "Tipo de cultivo de la siembra.",
+          "nulo": false,
+          "clave": "FK",
+          "referencia": "Cultivo.id_cultivo",
+          "regla": "Debe existir en la tabla referenciada.",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "id_temporada",
+          "tipo_sql": "INT",
+          "significado": "Temporada a la que se asigna el ciclo.",
+          "nulo": false,
+          "clave": "FK",
+          "referencia": "Temporada.id_temporada",
+          "regla": "Debe existir en la tabla referenciada.",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "fecha_inicio",
+          "tipo_sql": "DATE",
+          "significado": "Inicio del intervalo definido para el ciclo.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Menor o igual que fecha_fin; dentro de la temporada.",
+          "ejemplo": "2026-02-01"
+        },
+        {
+          "nombre": "fecha_fin",
+          "tipo_sql": "DATE",
+          "significado": "Fin del intervalo definido para el ciclo.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Mayor o igual que fecha_inicio; dentro de la temporada. Para ciclos activos es la fecha prevista; al cerrar se confirma.",
+          "ejemplo": "2026-05-31"
+        },
+        {
+          "nombre": "cantidad_sembrada",
+          "tipo_sql": "DECIMAL(14,3)",
+          "significado": "Cantidad de material de siembra, en unidad_siembra.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Mayor que cero; entera si la unidad es semillas o plantas.",
+          "ejemplo": "40000.000"
+        },
+        {
+          "nombre": "unidad_siembra",
+          "tipo_sql": "VARCHAR(10)",
+          "significado": "Unidad de la cantidad sembrada.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Valores propuestos: semillas, plantas, kg.",
+          "ejemplo": "semillas"
+        },
+        {
+          "nombre": "estado",
+          "tipo_sql": "VARCHAR(12)",
+          "significado": "Situación del ciclo.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Activo, Finalizado o Cancelado. DEFAULT propuesto: Activo.",
+          "ejemplo": "Finalizado"
+        }
+      ],
+      "pk": [
+        "id_ciclo"
+      ]
+    },
+    {
+      "nombre": "Trabajador",
+      "significado": "Persona responsable de labores agrícolas.",
+      "reglas_fuente": [
+        4
+      ],
+      "columnas": [
+        {
+          "nombre": "id_trabajador",
+          "tipo_sql": "INT",
+          "significado": "Identificador interno del trabajador.",
+          "nulo": false,
+          "clave": "PK",
+          "referencia": null,
+          "regla": "Identificador técnico generado automáticamente; puede presentar saltos. Propuesto IDENTITY(1,1).",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "documento",
+          "tipo_sql": "VARCHAR(25)",
+          "significado": "Documento ficticio que identifica al trabajador.",
+          "nulo": false,
+          "clave": "UQ",
+          "referencia": null,
+          "regla": "Único y sin texto vacío. Texto para conservar ceros iniciales.",
+          "ejemplo": "FICT-001"
+        },
+        {
+          "nombre": "nombre",
+          "tipo_sql": "NVARCHAR(100)",
+          "significado": "Nombre del trabajador ficticio.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Sin texto vacío.",
+          "ejemplo": "Persona de ejemplo 01"
+        },
+        {
+          "nombre": "funcion",
+          "tipo_sql": "NVARCHAR(60)",
+          "significado": "Función que desempeña.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Sin texto vacío.",
+          "ejemplo": "Operario agrícola"
+        },
+        {
+          "nombre": "estado",
+          "tipo_sql": "VARCHAR(8)",
+          "significado": "Estado del trabajador.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Valores propuestos: Activo, Inactivo.",
+          "ejemplo": "Activo"
+        }
+      ],
+      "pk": [
+        "id_trabajador"
+      ]
+    },
+    {
+      "nombre": "Labor",
+      "significado": "Actividad de un ciclo con un responsable.",
+      "reglas_fuente": [
+        5
+      ],
+      "columnas": [
+        {
+          "nombre": "id_labor",
+          "tipo_sql": "INT",
+          "significado": "Identificador interno de la labor.",
+          "nulo": false,
+          "clave": "PK",
+          "referencia": null,
+          "regla": "Identificador técnico generado automáticamente; puede presentar saltos. Propuesto IDENTITY(1,1).",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "id_ciclo",
+          "tipo_sql": "INT",
+          "significado": "Ciclo al que corresponde la labor; permite conocer su lote.",
+          "nulo": false,
+          "clave": "FK",
+          "referencia": "CicloCultivo.id_ciclo",
+          "regla": "Debe existir en la tabla referenciada.",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "id_trabajador",
+          "tipo_sql": "INT",
+          "significado": "Responsable de la labor.",
+          "nulo": false,
+          "clave": "FK",
+          "referencia": "Trabajador.id_trabajador",
+          "regla": "Debe existir en la tabla referenciada.",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "tipo",
+          "tipo_sql": "NVARCHAR(40)",
+          "significado": "Clase de actividad realizada.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Sin texto vacío; se documenta un vocabulario coherente para la carga.",
+          "ejemplo": "Fertilización"
+        },
+        {
+          "nombre": "fecha",
+          "tipo_sql": "DATE",
+          "significado": "Día en que se realiza la labor.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Dentro del intervalo del ciclo, según decisión de diseño.",
+          "ejemplo": "2026-02-20"
+        },
+        {
+          "nombre": "duracion_horas",
+          "tipo_sql": "DECIMAL(8,2)",
+          "significado": "Duración de la labor en horas.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Mayor que cero.",
+          "ejemplo": "2.00"
+        }
+      ],
+      "pk": [
+        "id_labor"
+      ]
+    },
+    {
+      "nombre": "Insumo",
+      "significado": "Recurso utilizable en labores, con costo actual y existencia registrada.",
+      "reglas_fuente": [
+        6,
+        10
+      ],
+      "columnas": [
+        {
+          "nombre": "id_insumo",
+          "tipo_sql": "INT",
+          "significado": "Identificador interno del insumo.",
+          "nulo": false,
+          "clave": "PK",
+          "referencia": null,
+          "regla": "Identificador técnico generado automáticamente; puede presentar saltos. Propuesto IDENTITY(1,1).",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "codigo_insumo",
+          "tipo_sql": "VARCHAR(20)",
+          "significado": "Código del insumo.",
+          "nulo": false,
+          "clave": "UQ",
+          "referencia": null,
+          "regla": "Único y sin texto vacío.",
+          "ejemplo": "I01"
+        },
+        {
+          "nombre": "nombre",
+          "tipo_sql": "NVARCHAR(100)",
+          "significado": "Nombre del insumo.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Sin texto vacío.",
+          "ejemplo": "Insumo A"
+        },
+        {
+          "nombre": "unidad",
+          "tipo_sql": "VARCHAR(6)",
+          "significado": "Unidad para disponibilidad y consumo del insumo.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Valores propuestos: kg, L, unidad.",
+          "ejemplo": "kg"
+        },
+        {
+          "nombre": "costo_unitario",
+          "tipo_sql": "DECIMAL(12,2)",
+          "significado": "Costo actual por unidad del insumo, en pesos colombianos.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Mayor o igual que cero.",
+          "ejemplo": "1500.00"
+        },
+        {
+          "nombre": "cantidad_disponible",
+          "tipo_sql": "DECIMAL(14,3)",
+          "significado": "Existencia actual registrada, en la unidad del insumo.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Mayor que cero según lectura literal del punto 9; entera si unidad=unidad.",
+          "ejemplo": "200.000"
+        }
+      ],
+      "pk": [
+        "id_insumo"
+      ]
+    },
+    {
+      "nombre": "ConsumoInsumo",
+      "significado": "Uso de un insumo en una labor; resuelve la relación de muchos a muchos.",
+      "reglas_fuente": [
+        7
+      ],
+      "pk": [
+        "id_labor",
+        "id_insumo"
+      ],
+      "columnas": [
+        {
+          "nombre": "id_labor",
+          "tipo_sql": "INT",
+          "significado": "Labor que utiliza el insumo.",
+          "nulo": false,
+          "clave": "PK, FK",
+          "referencia": "Labor.id_labor",
+          "regla": "Debe existir en Labor; forma la PK junto con id_insumo.",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "id_insumo",
+          "tipo_sql": "INT",
+          "significado": "Insumo utilizado en la labor.",
+          "nulo": false,
+          "clave": "PK, FK",
+          "referencia": "Insumo.id_insumo",
+          "regla": "Debe existir en Insumo; forma la PK junto con id_labor.",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "cantidad",
+          "tipo_sql": "DECIMAL(14,3)",
+          "significado": "Cantidad total utilizada del insumo en esa labor, en la unidad del insumo.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Mayor que cero; entera si la unidad del insumo es unidad.",
+          "ejemplo": "10.000"
+        },
+        {
+          "nombre": "costo_unitario_aplicado",
+          "tipo_sql": "DECIMAL(12,2)",
+          "significado": "Costo por unidad aplicado al consumo, en pesos colombianos.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Mayor o igual que cero. Es histórico; no cambia al actualizar el costo actual del insumo.",
+          "ejemplo": "1500.00"
+        }
+      ]
+    },
+    {
+      "nombre": "Cosecha",
+      "significado": "Registro de producción obtenida de un ciclo en una fecha.",
+      "reglas_fuente": [
+        8,
+        9
+      ],
+      "columnas": [
+        {
+          "nombre": "id_cosecha",
+          "tipo_sql": "INT",
+          "significado": "Identificador interno del registro de cosecha.",
+          "nulo": false,
+          "clave": "PK",
+          "referencia": null,
+          "regla": "Identificador técnico generado automáticamente; puede presentar saltos. Propuesto IDENTITY(1,1).",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "id_ciclo",
+          "tipo_sql": "INT",
+          "significado": "Ciclo que produjo la cosecha.",
+          "nulo": false,
+          "clave": "FK",
+          "referencia": "CicloCultivo.id_ciclo",
+          "regla": "Debe existir en la tabla referenciada.",
+          "ejemplo": 1
+        },
+        {
+          "nombre": "fecha",
+          "tipo_sql": "DATE",
+          "significado": "Día del registro de cosecha.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Dentro del intervalo del ciclo, según decisión de diseño.",
+          "ejemplo": "2026-05-15"
+        },
+        {
+          "nombre": "cantidad",
+          "tipo_sql": "DECIMAL(14,3)",
+          "significado": "Producción obtenida en este registro de cosecha.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Mayor que cero, expresada en unidad.",
+          "ejemplo": "6000.000"
+        },
+        {
+          "nombre": "unidad",
+          "tipo_sql": "VARCHAR(2)",
+          "significado": "Unidad de la cantidad cosechada.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Valores propuestos: kg o t. Para consultas se convierte t a kg (1 t = 1.000 kg).",
+          "ejemplo": "kg"
+        },
+        {
+          "nombre": "calidad",
+          "tipo_sql": "NVARCHAR(30)",
+          "significado": "Clasificación de calidad de la cosecha.",
+          "nulo": false,
+          "clave": "",
+          "referencia": null,
+          "regla": "Valores propuestos: Primera, Segunda, Industrial.",
+          "ejemplo": "Primera"
+        }
+      ],
+      "pk": [
+        "id_cosecha"
+      ]
+    }
+  ],
+  "relaciones": [
+    {
+      "padre": "Predio",
+      "hijo": "Lote",
+      "campo_hijo": "id_predio",
+      "campo_padre": "id_predio",
+      "hijos_por_padre": "0..N",
+      "padres_por_hijo": "1..1"
+    },
+    {
+      "padre": "Lote",
+      "hijo": "CicloCultivo",
+      "campo_hijo": "id_lote",
+      "campo_padre": "id_lote",
+      "hijos_por_padre": "0..N",
+      "padres_por_hijo": "1..1"
+    },
+    {
+      "padre": "Cultivo",
+      "hijo": "CicloCultivo",
+      "campo_hijo": "id_cultivo",
+      "campo_padre": "id_cultivo",
+      "hijos_por_padre": "0..N",
+      "padres_por_hijo": "1..1"
+    },
+    {
+      "padre": "Temporada",
+      "hijo": "CicloCultivo",
+      "campo_hijo": "id_temporada",
+      "campo_padre": "id_temporada",
+      "hijos_por_padre": "0..N",
+      "padres_por_hijo": "1..1"
+    },
+    {
+      "padre": "CicloCultivo",
+      "hijo": "Labor",
+      "campo_hijo": "id_ciclo",
+      "campo_padre": "id_ciclo",
+      "hijos_por_padre": "0..N",
+      "padres_por_hijo": "1..1"
+    },
+    {
+      "padre": "Trabajador",
+      "hijo": "Labor",
+      "campo_hijo": "id_trabajador",
+      "campo_padre": "id_trabajador",
+      "hijos_por_padre": "0..N",
+      "padres_por_hijo": "1..1"
+    },
+    {
+      "padre": "Labor",
+      "hijo": "ConsumoInsumo",
+      "campo_hijo": "id_labor",
+      "campo_padre": "id_labor",
+      "hijos_por_padre": "0..N",
+      "padres_por_hijo": "1..1"
+    },
+    {
+      "padre": "Insumo",
+      "hijo": "ConsumoInsumo",
+      "campo_hijo": "id_insumo",
+      "campo_padre": "id_insumo",
+      "hijos_por_padre": "0..N",
+      "padres_por_hijo": "1..1"
+    },
+    {
+      "padre": "CicloCultivo",
+      "hijo": "Cosecha",
+      "campo_hijo": "id_ciclo",
+      "campo_padre": "id_ciclo",
+      "hijos_por_padre": "0..N",
+      "padres_por_hijo": "1..1"
+    }
+  ]
+}
