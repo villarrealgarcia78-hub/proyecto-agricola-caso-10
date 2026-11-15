@@ -1,10 +1,10 @@
 # SQL Server: implementación de la Parte II
 
-En esta carpeta reuniré los archivos con instrucciones para SQL Server, llamados scripts. Corresponden a la Parte II.
+En esta carpeta guardo los scripts que uso para crear y comprobar la base de datos de la Parte II.
 
-Los scripts de creación y restricciones están disponibles. La base `DNV_Caso10` y sus tablas se crearon en SQL Server desde SSMS el 14 de noviembre de 2026. Germán ejecutó el script y la comprobación dio **10 tablas y 53 campos**.
+Los scripts de creación y restricciones están disponibles. El 14 de noviembre de 2026, la comprobación en SSMS mostró **10 tablas y 53 campos** en la base `DNV_Caso10`.
 
-Tengo previstos estos archivos:
+Este es el orden de los scripts de la Parte II.
 
 | Orden previsto | Archivo | Para qué sirve |
 |---|---|---|
@@ -24,8 +24,8 @@ Usaré como referencia el [diccionario de datos](../../modelo/diccionario_datos.
 
 ## Paso 1. Crear la base y comprobar las tablas
 
-1. Abrir `01_crear_base_y_tablas.sql` en SSMS y ejecutar el archivo completo.
-2. Abrir una consulta nueva y ejecutar la siguiente comprobación. `sys.tables` permite consultar las tablas y `sys.columns`, sus campos. `DISTINCT` evita contar varias veces la misma tabla.
+1. Uso `01_crear_base_y_tablas.sql` en SSMS para crear la base y sus tablas.
+2. Compruebo cuántas tablas y campos tiene la base. `sys.tables` muestra las tablas y `sys.columns` muestra sus campos. `DISTINCT` cuenta cada tabla una sola vez.
 
 ```sql
 SELECT COUNT(DISTINCT tablas.object_id) AS Tablas,
@@ -46,8 +46,8 @@ El script crea las nueve claves foráneas y las reglas de cada tabla. Para ver e
 
 ### Prueba con datos ficticios
 
-Con [02_probar_restricciones.sql](02_probar_restricciones.sql) puedo repetir ocho ejemplos del paso 2. El archivo retira los registros de prueba antes de mostrar qué esperaba y qué ocurrió. El resultado de SSMS está en el [registro de pruebas](../../documentacion/pruebas.md#comprobacion-de-restricciones-con-datos-ficticios).
+Con [02_probar_restricciones.sql](02_probar_restricciones.sql) puedo repetir ocho ejemplos del paso 2. El archivo retira los registros de prueba antes de mostrar qué esperaba y qué ocurrió. El resultado de SSMS está en el [registro de pruebas](../../documentacion/pruebas.md#comprobación-de-restricciones-con-datos-ficticios).
 
 ### Reglas entre tablas
 
-Con [02_reglas_entre_tablas.sql](02_reglas_entre_tablas.sql) compruebo fechas de registros relacionados y la unidad de los insumos. El archivo se ejecuta después de las restricciones del paso 2 y antes de cargar datos. En SSMS quedaron seis reglas activas. La [guía explica cada regla con un ejemplo](../../documentacion/restricciones_sqlserver.md#reglas-que-consultan-otra-tabla).
+Con [02_reglas_entre_tablas.sql](02_reglas_entre_tablas.sql) compruebo fechas de registros relacionados y la unidad de los insumos. Aplico estas reglas después de las claves y restricciones de cada tabla, antes de cargar los datos. SSMS mostró seis reglas activas. Describo cada una en la [guía de restricciones](../../documentacion/restricciones_sqlserver.md#reglas-que-consultan-otra-tabla).
