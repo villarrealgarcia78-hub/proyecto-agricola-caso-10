@@ -43,3 +43,7 @@ WHERE tablas.is_ms_shipped = 0;
 ## Paso 2. Agregar y revisar las restricciones
 
 El script crea las nueve claves foráneas y las reglas de cada tabla. Para ver el detalle, ejecuto [02_verificar_restricciones.sql](02_verificar_restricciones.sql) en SSMS. La [guía de restricciones](../../documentacion/restricciones_sqlserver.md) explica cómo leer cada resultado.
+
+### Prueba con datos ficticios
+
+Con [02_probar_restricciones.sql](02_probar_restricciones.sql) puedo repetir ocho ejemplos del paso 2. El archivo retira los registros de prueba antes de mostrar qué esperaba y qué ocurrió. El resultado de SSMS está en el [registro de pruebas](../../documentacion/pruebas.md#comprobacion-de-restricciones-con-datos-ficticios).
