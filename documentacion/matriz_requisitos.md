@@ -34,7 +34,7 @@ En [reglas del negocio](reglas_negocio.md) y [decisiones de diseño](decisiones_
 
 ## 2. Preguntas de negocio para resolver con SQL
 
-Las diez preguntas corresponden a la página 25 del enunciado. En esta tabla explico qué datos necesito y cómo planteo cada consulta. Su implementación y sus pruebas están pendientes para la Parte II.
+Las diez preguntas corresponden a la página 25 del enunciado. En esta tabla explico qué datos necesito y cómo planteo cada consulta. Las consultas están en el [archivo SQL](../scripts/sqlserver/04_consultas_negocio.sql) y sus resultados en el [registro de P05](pruebas.md#p05-diez-consultas-del-caso).
 
 | Código | Pregunta del profesor | Tablas que relaciono | Cómo planteo la consulta |
 |---|---|---|---|
@@ -92,7 +92,7 @@ En esta tabla separo lo que pide la guía, cómo lo incluyo en mi proyecto y su 
 | G02 | Un diccionario que explique el significado, el tipo de dato, si el campo es obligatorio, las claves y las reglas. | El diccionario describe los 53 campos del modelo. Su contenido tiene una comprobación documental contra el esquema y el modelo relacional. | Parte I: diccionario completo y comprobado documentalmente. |
 | G03 | SQL Server como componente principal, con archivos separados que permitan crear y reconstruir la base de datos. | Tengo previstos archivos con instrucciones, llamados scripts, para crear la estructura, aplicar las reglas, cargar los datos y realizar las consultas. | Parte II: creación y ejecución de los scripts pendientes. |
 | G04 | Al menos 1.000 registros ficticios, variados y coherentes por cada tabla de SQL Server. | Incluyo las diez tablas, también `Cultivo`, `Temporada` y `ConsumoInsumo`. Los datos deben corresponder al caso y relacionarse correctamente. | Las diez tablas alcanzan el mínimo. Los conteos de SSMS suman 19.034 filas. [Resultados de P04](pruebas.md#p04-carga-de-datos-ficticios). |
-| G05 | Consultas con filtros, orden, cálculos, agrupaciones, uniones y subconsultas, junto con la explicación de sus resultados. | Planteo las diez preguntas de negocio y las técnicas que explico debajo de esta tabla. Debo comprobar que las consultas incluyan todas las técnicas exigidas, también `MIN` y `HAVING`. | Parte II: consultas, pruebas y explicación de resultados pendientes. |
+| G05 | Consultas con filtros, orden, cálculos, agrupaciones, uniones y subconsultas, junto con la explicación de sus resultados. | Uso las técnicas que explico debajo de esta tabla. Por ejemplo, en Q03 uso `MIN` para mostrar la primera fecha de labor y en Q10 uso `HAVING` para incluir los predios con cosecha. | Las diez salidas de SSMS coinciden con lo esperado. [Resultados de P05](pruebas.md#p05-diez-consultas-del-caso). |
 | G06 | Probar operaciones válidas e inválidas y comparar el resultado esperado con el obtenido. | El plan de pruebas incluye datos correctos y datos que incumplen las reglas. En cada prueba registraré la regla revisada, los pasos, el resultado esperado y el resultado obtenido. También comprobaré las cantidades de registros y la creación completa desde cero. | Parte II: pruebas y registro de resultados pendientes. |
 | G07 | Un script separado de limpieza o reinicio, con advertencia de borrado, e instrucciones para reconstruir la base desde cero. | Prepararé el script con la advertencia correspondiente. El README indicará el entorno, las versiones, el orden de ejecución y las comprobaciones. | Parte II: script e instrucciones definitivas pendientes de crear y probar. |
 | G08 | Un repositorio Git con commits descriptivos y una bitácora individual. | La bitácora contiene los avances documentales. Usaré commits, que guardan versiones de los archivos con un mensaje que describe el cambio. Registraré mis actividades reales en la bitácora. | Bitácora preparada. Repositorio Git, commits y registro individual de actividades pendientes. |
@@ -100,7 +100,7 @@ En esta tabla separo lo que pide la guía, cómo lo incluyo en mi proyecto y su 
 | G10 | Explicar cómo se comprueba que las referencias de MongoDB correspondan a registros de SQL Server. | Comprobaré que cada identificador de labor o ciclo exista en SQL Server y guardaré el resultado de esa revisión. Guardar el identificador en MongoDB no crea una clave foránea automática entre los dos sistemas. | Parte II: mecanismo de comprobación y evidencia pendientes. |
 | G11 | Sustentación individual y declaración del apoyo de inteligencia artificial cuando corresponda. | Explicaré el modelo, las decisiones, el código, las consultas y el complemento de MongoDB. Conservo la declaración breve de apoyo incluida en el README. | Declaración incluida. Sustentación individual pendiente. |
 
-Para las consultas de G05, tengo previstas estas instrucciones y funciones:
+En las consultas de G05 uso estas instrucciones y funciones:
 
 | Instrucción o función | Para qué la uso |
 |---|---|

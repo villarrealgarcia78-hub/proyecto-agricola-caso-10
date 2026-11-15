@@ -2,11 +2,11 @@
 
 En este documento presento las pruebas de la Parte II. Indico qué compruebo y registro los resultados obtenidos.
 
-Ya están registrados los resultados de la comprobación inicial de la estructura, las pruebas de las reglas y la carga de datos ficticios.
+Ya están registrados los resultados de la comprobación inicial de la estructura, las pruebas de las reglas, la carga de datos ficticios y las diez consultas.
 
 | Sistema | Pruebas ejecutadas |
 |---|---:|
-| SQL Server | P01 parcial. Ocho casos comprobados en P02, nueve en P03 y diez controles de carga en P04. |
+| SQL Server | P01 parcial. Resultados registrados de P02, P03, P04 y P05. |
 | MongoDB | Fuera del alcance de esta entrega, según la indicación del profesor en clase |
 
 La revisión de la Parte I corresponde a los documentos del diseño.
@@ -22,13 +22,13 @@ Uso los códigos P01 a P09 para identificar cada prueba. En la tabla explico qu�
 | P02 | Probaré datos correctos y datos que incumplen las reglas, como campos sin datos, valores repetidos o referencias a registros que no existen. También crearé un ciclo sin indicar su estado. | Se aceptan los datos válidos y se rechazan los inválidos. El código de un lote no se repite dentro de su predio, aunque puede usarse en otro. La pareja de labor e insumo no se repite. Las cantidades, áreas y duraciones son mayores que cero; los costos admiten cero. El estado inicial del ciclo es `Activo`. | Ocho casos comprobados el 14 de noviembre de 2026. Los ocho cumplieron. |
 | P03 | Compruebo las fechas, las unidades y las cantidades al agregar o modificar registros. Incluyo cambios en los registros relacionados y operaciones que afectan varias filas a la vez. | Cada ciclo queda dentro de las fechas de su temporada, y cada labor y cosecha, dentro de su ciclo. Las semillas, las plantas y los insumos medidos en `unidad` usan cantidades sin decimales. La cantidad disponible y la consumida usan la unidad del insumo. Esa unidad se conserva si el insumo ya tiene consumos. Se rechazan los cambios que incumplen estas condiciones. | El 14 de noviembre de 2026, [los nueve casos probados cumplieron](#p03-reglas-entre-tablas). |
 | P04 | Compruebo cuántas filas hay por tabla y reviso las fechas, las cantidades y las relaciones de los datos ficticios. | Al menos 1.000 filas en cada una de las diez tablas, con datos variados y relacionados. | El 14 de noviembre de 2026, las diez tablas alcanzaron el mínimo y [los diez controles coincidieron](#p04-carga-de-datos-ficticios). |
-| P05 | Ejecutaré las diez consultas y compararé sus respuestas con cálculos hechos por separado. Explicaré qué significa cada resultado. | Las respuestas coinciden con esos cálculos. La producción se expresa en kilogramos y el área se cuenta una vez por ciclo con cosecha. Los costos conservan el precio aplicado en cada consumo. Los promedios siguen los criterios descritos debajo de la tabla. Las consultas conservan los empates de mayor producción y no repiten cantidades al relacionar los datos. | No ejecutado. |
+| P05 | Comparo las respuestas de las diez consultas con los resultados esperados. | Las respuestas coinciden con esos cálculos. La producción se expresa en kilogramos y el área se cuenta una vez por ciclo con cosecha. Los costos conservan el precio aplicado en cada consumo. Los promedios siguen los criterios descritos debajo de la tabla. Las consultas conservan los empates de mayor producción y no repiten cantidades al relacionar los datos. | Las diez salidas del 14 de noviembre de 2026 coinciden con lo esperado. [Resultados de P05](#p05-diez-consultas-del-caso). |
 | P06 | Revisaré las instrucciones usadas en las consultas y probaré casos sin actividad. | Las consultas incluyen filtros, orden, conteos, sumas, promedios, mínimos y máximos, agrupaciones, filtros de grupos, uniones de tablas y consultas dentro de otras. Distingo los lotes sin ciclos y los insumos nunca utilizados de los que no tienen actividad en una temporada. También compruebo los lotes sin siembras activas. | No ejecutado. |
 | P07 | Pruebas de operaciones y consultas de MongoDB previstas en el enunciado inicial. | No aplica. | Fuera del alcance de esta entrega por indicación del profesor. |
 | P08 | Comprobación de referencias entre MongoDB y SQL Server prevista en el enunciado inicial. | No aplica. | Fuera del alcance de esta entrega por indicación del profesor. |
 | P09 | Ejecutaré la creación completa de la base desde cero y el archivo separado de reinicio en el entorno del proyecto. Seguiré el orden indicado en el README y comprobaré los resultados. | La base se puede reconstruir con los archivos y las instrucciones del proyecto. El archivo de reinicio muestra una advertencia de borrado antes de eliminar los datos. | No ejecutado. |
 
-En P05, compararé los rendimientos de los cultivos con cosecha de una misma temporada. Para el promedio de costos, incluiré todos los ciclos de esa temporada, también los que no tienen consumos, con costo cero. En ambos casos, seleccionaré los resultados mayores que el promedio; los iguales no cumplen esa condición.
+En P05 comparo los rendimientos de los cultivos con cosecha de una misma temporada. Para el promedio de costos, incluyo todos los ciclos de esa temporada. Los ciclos sin consumos tienen costo cero. En los dos casos selecciono valores mayores que el promedio.
 
 Para P06, revisaré las instrucciones `SELECT`, `WHERE`, `ORDER BY`, `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`, `GROUP BY`, `HAVING`, `JOIN` y las subconsultas. Su significado está explicado en el apartado «Requisitos generales y estado de la entrega» de la [matriz de requisitos](matriz_requisitos.md).
 
@@ -118,3 +118,22 @@ Los diez controles dieron el resultado esperado. Por ejemplo, las labores y las 
 | Insumos nunca usados | 100 | 100 |
 | Labores sin consumo registrado | 4.000 | 4.000 |
 | Predios con lotes que suman más que el área del predio | 0 | 0 |
+
+## P05. Diez consultas del caso
+
+En [04_consultas_negocio.sql](../scripts/sqlserver/04_consultas_negocio.sql) identifico cada pregunta con un código, de Q01 a Q10. El 14 de noviembre de 2026, las diez salidas de SSMS coincidieron con lo esperado. Los conteos de las cuadrículas suman 15.780 filas. [Ejemplos de los resultados de SSMS](../evidencias/capturas_o_resultados/P05_01_Resultados_SSMS.md)
+
+| Consulta | Qué muestra | Filas esperadas | Filas obtenidas |
+|---|---|---:|---:|
+| Q01 | Lotes ordenados por predio y área. | 2.000 | 2.000 |
+| Q02 | Labores del 12 al 22 de enero de 2026, incluidos ambos días. | 90 | 90 |
+| Q03 | Conteo de labores por cultivo y temporada. | 1.950 | 1.950 |
+| Q04 | Producción y rendimiento por lote y temporada. | 2.750 | 2.750 |
+| Q05 | Detalle de labores, con una fila por insumo cuando hay varios. | 5.250 | 5.250 |
+| Q06 | Insumos que nunca se utilizaron. | 100 | 100 |
+| Q07 | Lotes que nunca tuvieron un ciclo. | 750 | 750 |
+| Q08 | Cultivos con rendimiento superior al promedio de su temporada. | 845 | 845 |
+| Q09 | Ciclos con costo de insumos superior al promedio de su temporada. | 1.000 | 1.000 |
+| Q10 | Predios con mayor producción de su temporada. | 1.045 | 1.045 |
+
+En Q05 aparecen las 5.000 labores. Hay 4.000 sin insumos y 250 con dos insumos. Esas 250 explican por qué la consulta devuelve 5.250 filas. En Q10 aparecen 992 temporadas con cosecha. En 53 de esas temporadas hay dos predios empatados en el primer lugar.
