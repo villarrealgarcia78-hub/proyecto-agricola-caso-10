@@ -2,7 +2,7 @@
 
 Con [el script de restricciones](../scripts/sqlserver/02_restricciones_y_reglas.sql) agrego las relaciones entre tablas, las reglas para evitar repeticiones, las condiciones de los datos y el estado inicial de un ciclo. Con [la consulta de verificación](../scripts/sqlserver/02_verificar_restricciones.sql) puedo ver cuáles quedaron guardadas en `DNV_Caso10`.
 
-## Cómo leo las cuatro tablas de resultados
+## Qué significan las restricciones
 
 | Tipo | Para qué sirve | Ejemplo del caso |
 |---|---|---|
@@ -15,7 +15,7 @@ En una clave foránea, **TablaOrigen** y **ColumnaOrigen** indican dónde guardo
 
 ## Las nueve claves foráneas
 
-| Nombre en SQL Server | Campo que guarda la referencia | Campo que debe existir | Cómo la explico |
+| Nombre en SQL Server | Campo que guarda la referencia | Campo que debe existir | Relación en el proyecto |
 |---|---|---|---|
 | `FK_Lote_Predio` | `Lote.id_predio` | `Predio.id_predio` | Cada lote pertenece a un predio existente. |
 | `FK_CicloCultivo_Lote` | `CicloCultivo.id_lote` | `Lote.id_lote` | Cada ciclo se realiza en un lote existente. |
@@ -27,7 +27,7 @@ En una clave foránea, **TablaOrigen** y **ColumnaOrigen** indican dónde guardo
 | `FK_ConsumoInsumo_Insumo` | `ConsumoInsumo.id_insumo` | `Insumo.id_insumo` | Cada consumo indica cuál insumo se utilizó. |
 | `FK_Cosecha_CicloCultivo` | `Cosecha.id_ciclo` | `CicloCultivo.id_ciclo` | Cada cosecha indica de cuál ciclo salió. |
 
-Si veo `FK_CicloCultivo_Cultivo`, puedo seguir `CicloCultivo.id_cultivo` hasta `Cultivo.id_cultivo`. Esto me permite consultar el nombre del cultivo sin escribirlo de nuevo en cada ciclo.
+Guardo `id_cultivo` en cada ciclo para relacionarlo con la tabla `Cultivo`. Con esa relación puedo consultar el nombre del cultivo sin repetirlo en cada ciclo.
 
 ## Las seis restricciones de unicidad
 
@@ -85,7 +85,7 @@ La consulta de conteo devolvió 9 claves foráneas, 6 restricciones únicas, 26 
 
 Una clave foránea comprueba que el registro relacionado exista. Cuando también necesito revisar un dato de ese registro, uso un **trigger**. Es un bloque que SQL Server ejecuta automáticamente al agregar o cambiar datos. Si encuentra una fila que incumple la regla, SQL Server rechaza la operación y muestra el motivo. El [script de reglas entre tablas](../scripts/sqlserver/02_reglas_entre_tablas.sql) instala los seis bloques.
 
-| Regla de SQL Server | Qué compruebo | Ejemplo para explicarla |
+| Regla de SQL Server | Qué compruebo | Ejemplo del caso |
 |---|---|---|
 | `TR_Temporada_intervalo` | Si cambio las fechas de una temporada, sus ciclos deben seguir dentro del periodo. | Si un ciclo termina en mayo, no puedo acortar su temporada hasta abril. |
 | `TR_CicloCultivo_intervalos` | El ciclo debe quedar dentro de su temporada. Si cambio el ciclo, sus labores y cosechas deben seguir dentro de sus fechas. | Si una labor se hizo el 10 de abril, no puedo cerrar el ciclo el 5 de abril. |
@@ -96,4 +96,4 @@ Una clave foránea comprueba que el registro relacionado exista. Cuando también
 
 Las fechas del primer y del último día sí cuentan como parte del periodo. El bloque revisa todas las filas de una misma operación. En el código, `inserted` contiene los datos nuevos y `deleted` permite leer el valor que tenía un registro antes del cambio. Así puedo comparar, por ejemplo, la unidad anterior de un insumo con la unidad nueva.
 
-Germán ejecutó el archivo en SSMS el 14 de noviembre de 2026. La consulta de comprobación mostró **seis reglas con `Activa = Sí`**. Eso permite comprobar que quedaron habilitadas. En P03 registro por separado los intentos con fechas y unidades válidas e inválidas. [Captura de las seis reglas activas](../evidencias/capturas_o_resultados/P03_01_Reglas_activas.png)
+El 14 de noviembre de 2026, la consulta de SSMS mostró **seis reglas activas**. En la prueba P03 comprobaré qué ocurre al guardar fechas y unidades válidas e inválidas. [Captura de las seis reglas activas](../evidencias/capturas_o_resultados/P03_01_Reglas_activas.png)
