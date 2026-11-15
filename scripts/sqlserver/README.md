@@ -11,7 +11,7 @@ Este es el orden de los scripts de la Parte II.
 | 1 | [01_crear_base_y_tablas.sql](01_crear_base_y_tablas.sql) | Crear la base de datos del ejercicio y las tablas del modelo. |
 | 2 | [02_restricciones_y_reglas.sql](02_restricciones_y_reglas.sql) | Definir las reglas que deben cumplir los datos, como identificadores únicos, referencias entre tablas y valores permitidos. |
 | 3 | [03_datos_semilla.sql](03_datos_semilla.sql) | Cargar datos ficticios, variados y relacionados, con al menos 1.000 filas por cada tabla. |
-| 4 | `04_consultas_negocio.sql` | Resolver las diez preguntas de negocio y explicar los resultados. |
+| 4 | [04_consultas_negocio.sql](04_consultas_negocio.sql) | Resolver las diez preguntas de negocio y explicar los resultados. |
 | 5, si aplica | `05_vistas.sql` | Crear vistas, que son consultas guardadas, si resultan útiles para el caso. |
 
 Si una consulta utiliza una vista, crearé primero esa vista.
@@ -57,3 +57,7 @@ Con [02_probar_reglas_entre_tablas.sql](02_probar_reglas_entre_tablas.sql) puedo
 ## Paso 3. Cargar datos ficticios
 
 Uso [03_datos_semilla.sql](03_datos_semilla.sql) después de crear las tablas y activar las reglas. El archivo comprueba que estén vacías, carga los datos y muestra dos cuadrículas. En la primera reviso cuántas filas quedaron por tabla. En la segunda comparo los controles con lo que esperaba. Los conteos suman 19.034 filas y los diez controles coinciden con lo esperado. [Resultados de P04](../../documentacion/pruebas.md#p04-carga-de-datos-ficticios)
+
+## Paso 4. Consultar los datos del caso
+
+Uso [04_consultas_negocio.sql](04_consultas_negocio.sql) después de cargar los datos. Cada cuadrícula muestra el código de la pregunta en la primera columna. En Q02 puedo cambiar las dos fechas para consultar otro intervalo. Los conteos y ejemplos de las diez salidas de SSMS están en el [registro de P05](../../documentacion/pruebas.md#p05-diez-consultas-del-caso).
