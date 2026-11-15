@@ -47,3 +47,7 @@ El script crea las nueve claves foráneas y las reglas de cada tabla. Para ver e
 ### Prueba con datos ficticios
 
 Con [02_probar_restricciones.sql](02_probar_restricciones.sql) puedo repetir ocho ejemplos del paso 2. El archivo retira los registros de prueba antes de mostrar qué esperaba y qué ocurrió. El resultado de SSMS está en el [registro de pruebas](../../documentacion/pruebas.md#comprobacion-de-restricciones-con-datos-ficticios).
+
+### Reglas entre tablas
+
+Con [02_reglas_entre_tablas.sql](02_reglas_entre_tablas.sql) compruebo fechas de registros relacionados y la unidad de los insumos. El archivo se ejecuta después de las restricciones del paso 2 y antes de cargar datos. En SSMS quedaron seis reglas activas. La [guía explica cada regla con un ejemplo](../../documentacion/restricciones_sqlserver.md#reglas-que-consultan-otra-tabla).
