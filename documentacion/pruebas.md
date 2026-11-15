@@ -2,11 +2,11 @@
 
 En este documento presento las pruebas de la Parte II. Indico qué compruebo y registro los resultados obtenidos.
 
-La comprobación inicial del número de tablas y campos ya tiene resultado. Las otras comprobaciones de SQL Server siguen pendientes.
+La comprobación inicial de la estructura y los ocho casos con datos ficticios de las restricciones ya tienen resultados.
 
 | Sistema | Pruebas ejecutadas |
 |---|---:|
-| SQL Server | 1 comprobación parcial de P01 |
+| SQL Server | P01 parcial. Ocho casos de P02 ejecutados. |
 | MongoDB | Fuera del alcance de esta entrega, según la indicación del profesor en clase |
 
 La revisión de la Parte I corresponde a los documentos del diseño.
@@ -19,7 +19,7 @@ Uso los códigos P01 a P09 para identificar cada prueba. En la tabla explico qu�
 | Prueba | Qué comprobaré | Resultado esperado | Resultado obtenido |
 |---|---|---|---|
 | P01 | Crearé la base de datos y sus tablas desde cero en el entorno del proyecto. Compararé su estructura con el modelo y el diccionario. | Diez tablas, 53 campos y nueve relaciones. Los tipos de datos, las claves que identifican y relacionan los registros y los campos obligatorios coinciden con el diccionario. | Paso 1 comprobado el 14 de noviembre de 2026: 10 tablas y 53 campos. Faltan las nueve relaciones y el cotejo de los demás detalles. |
-| P02 | Probaré datos correctos y datos que incumplen las reglas, como campos sin datos, valores repetidos o referencias a registros que no existen. También crearé un ciclo sin indicar su estado. | Se aceptan los datos válidos y se rechazan los inválidos. El código de un lote no se repite dentro de su predio, aunque puede usarse en otro. La pareja de labor e insumo no se repite. Las cantidades, áreas y duraciones son mayores que cero; los costos admiten cero. El estado inicial del ciclo es `Activo`. | No ejecutado. |
+| P02 | Probaré datos correctos y datos que incumplen las reglas, como campos sin datos, valores repetidos o referencias a registros que no existen. También crearé un ciclo sin indicar su estado. | Se aceptan los datos válidos y se rechazan los inválidos. El código de un lote no se repite dentro de su predio, aunque puede usarse en otro. La pareja de labor e insumo no se repite. Las cantidades, áreas y duraciones son mayores que cero; los costos admiten cero. El estado inicial del ciclo es `Activo`. | Ocho casos comprobados el 14 de noviembre de 2026. Los ocho cumplieron. |
 | P03 | Probaré las fechas, las unidades y las cantidades al agregar o modificar registros. Incluiré cambios en los registros relacionados y operaciones que afectan varias filas a la vez. | Cada ciclo queda dentro de las fechas de su temporada, y cada labor y cosecha, dentro de su ciclo. Las semillas, las plantas y los insumos medidos en `unidad` usan cantidades sin decimales. La cantidad disponible y la consumida usan la unidad del insumo. Esa unidad se conserva si el insumo ya tiene consumos. Se rechazan los cambios que incumplen estas condiciones. | No ejecutado. |
 | P04 | Cargaré datos ficticios y revisaré la cantidad de filas, su variedad y sus relaciones en cada tabla. | Al menos 1.000 filas en cada una de las diez tablas, incluidas `Cultivo`, `Temporada` y `ConsumoInsumo`. Los datos corresponden al caso, se relacionan con registros existentes y no se repiten solo para completar la cantidad. Mantengo pendiente aclarar cómo reunir datos razonables para `Cultivo` y `Temporada`, sin reducir ese mínimo. | No ejecutado. |
 | P05 | Ejecutaré las diez consultas y compararé sus respuestas con cálculos hechos por separado. Explicaré qué significa cada resultado. | Las respuestas coinciden con esos cálculos. La producción se expresa en kilogramos y el área se cuenta una vez por ciclo con cosecha. Los costos conservan el precio aplicado en cada consumo. Los promedios siguen los criterios descritos debajo de la tabla. Las consultas conservan los empates de mayor producción y no repiten cantidades al relacionar los datos. | No ejecutado. |
@@ -49,3 +49,20 @@ Guardaré los errores y las correcciones con sus fechas reales.
 Después de ejecutar las pruebas, guardaré las evidencias en la carpeta `evidencias/capturas_o_resultados/`. La comprobación inicial está en [la captura de SSMS](../evidencias/capturas_o_resultados/P01_01_Tablas_y_campos.png).
 
 Fuente: Proyecto integrador.pdf, páginas 3–4, 25–26 y 28–29.
+
+## Comprobación de restricciones con datos ficticios
+
+El 14 de noviembre de 2026 Germán ejecutó en SSMS el [script de prueba](../scripts/sqlserver/02_probar_restricciones.sql). Cada prueba muestra qué esperaba y qué ocurrió. La última fila muestra 8 casos probados, 8 que cumplen, 0 que no cumplen y 0 predios de prueba restantes. [Captura de SSMS](../evidencias/capturas_o_resultados/P02_03_Pruebas_restricciones.png)
+
+| Caso | Resultado obtenido |
+|---|---|
+| Lote con un predio existente | SQL Server lo aceptó. |
+| Mismo código de lote en otro predio | SQL Server lo aceptó. |
+| Insumo con costo cero | SQL Server lo aceptó. |
+| Ciclo sin indicar estado | SQL Server le asignó `Activo`. |
+| Lote repetido en el mismo predio | `UQ_Lote_predio_codigo` impidió el duplicado. |
+| Lote con predio inexistente | `FK_Lote_Predio` impidió la referencia. |
+| Predio con área cero | `CK_Predio_area` rechazó el área. |
+| Cosecha con cantidad cero | `CK_Cosecha_cantidad` rechazó la cantidad. |
+
+Las pruebas que comparan fechas y unidades entre tablas se registran en P03.
