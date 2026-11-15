@@ -51,3 +51,5 @@ Con [02_probar_restricciones.sql](02_probar_restricciones.sql) puedo repetir och
 ### Reglas entre tablas
 
 Con [02_reglas_entre_tablas.sql](02_reglas_entre_tablas.sql) compruebo fechas de registros relacionados y la unidad de los insumos. Aplico estas reglas después de las claves y restricciones de cada tabla, antes de cargar los datos. SSMS mostró seis reglas activas. Describo cada una en la [guía de restricciones](../../documentacion/restricciones_sqlserver.md#reglas-que-consultan-otra-tabla).
+
+Con [02_probar_reglas_entre_tablas.sql](02_probar_reglas_entre_tablas.sql) puedo repetir los nueve casos de P03. El archivo muestra qué casos acepta o rechaza SQL Server y cuántos cumplen lo esperado. Los resultados se encuentran en el [registro de pruebas](../../documentacion/pruebas.md#p03-reglas-entre-tablas).
