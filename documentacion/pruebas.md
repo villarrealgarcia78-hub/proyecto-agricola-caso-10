@@ -2,11 +2,11 @@
 
 En este documento presento las pruebas de la Parte II. Indico qué compruebo y registro los resultados obtenidos.
 
-Ya están registrados los resultados de la comprobación inicial de la estructura, las pruebas de las reglas, la carga de datos ficticios y las diez consultas.
+Ya están registrados los resultados de la comprobación inicial de la estructura, las pruebas de las reglas, la carga de datos ficticios, las diez consultas y la prueba de reconstrucción y reinicio.
 
 | Sistema | Pruebas ejecutadas |
 |---|---:|
-| SQL Server | P01 parcial. Resultados registrados de P02, P03, P04 y P05. |
+| SQL Server | P01 parcial. Resultados registrados de P02, P03, P04, P05 y P09. |
 | MongoDB | Fuera del alcance de esta entrega, según la indicación del profesor en clase |
 
 La revisión de la Parte I corresponde a los documentos del diseño.
@@ -26,7 +26,7 @@ Uso los códigos P01 a P09 para identificar cada prueba. En la tabla explico qu�
 | P06 | Revisaré las instrucciones usadas en las consultas y probaré casos sin actividad. | Las consultas incluyen filtros, orden, conteos, sumas, promedios, mínimos y máximos, agrupaciones, filtros de grupos, uniones de tablas y consultas dentro de otras. Distingo los lotes sin ciclos y los insumos nunca utilizados de los que no tienen actividad en una temporada. También compruebo los lotes sin siembras activas. | No ejecutado. |
 | P07 | Pruebas de operaciones y consultas de MongoDB previstas en el enunciado inicial. | No aplica. | Fuera del alcance de esta entrega por indicación del profesor. |
 | P08 | Comprobación de referencias entre MongoDB y SQL Server prevista en el enunciado inicial. | No aplica. | Fuera del alcance de esta entrega por indicación del profesor. |
-| P09 | Ejecutaré la creación completa de la base desde cero y el archivo separado de reinicio en el entorno del proyecto. Seguiré el orden indicado en el README y comprobaré los resultados. | La base se puede reconstruir con los archivos y las instrucciones del proyecto. El archivo de reinicio muestra una advertencia de borrado antes de eliminar los datos. | No ejecutado. |
+| P09 | Compruebo que los scripts crean una base de prueba desde cero, cargan los datos y devuelven los conteos de las diez consultas. Uso un archivo aparte para probar el reinicio. | La reconstrucción termina con los resultados esperados y el reinicio elimina solo la base de prueba. | El 14 de noviembre de 2026, [la reconstrucción y el reinicio cumplieron lo esperado](#p09-reconstrucción-y-reinicio). |
 
 En P05 comparo los rendimientos de los cultivos con cosecha de una misma temporada. Para el promedio de costos, incluyo todos los ciclos de esa temporada. Los ciclos sin consumos tienen costo cero. En los dos casos selecciono valores mayores que el promedio.
 
@@ -137,3 +137,17 @@ En [04_consultas_negocio.sql](../scripts/sqlserver/04_consultas_negocio.sql) ide
 | Q10 | Predios con mayor producción de su temporada. | 1.045 | 1.045 |
 
 En Q05 aparecen las 5.000 labores. Hay 4.000 sin insumos y 250 con dos insumos. Esas 250 explican por qué la consulta devuelve 5.250 filas. En Q10 aparecen 992 temporadas con cosecha. En 53 de esas temporadas hay dos predios empatados en el primer lugar.
+
+## P09. Reconstrucción y reinicio
+
+Uso una base aparte, `DNV_Caso10_Reconstruccion`, para comprobar si los archivos permiten empezar desde cero. El orden de ejecución está en la [guía de reconstrucción](../scripts/sqlserver/p09_reconstruccion/README.md).
+
+| Qué compruebo | Qué mostró SSMS el 14 de noviembre de 2026 |
+|---|---|
+| Tablas y campos | 10 tablas y 53 campos. |
+| Reglas de los datos | 9 claves foráneas, 6 reglas de unicidad, 26 comprobaciones, 1 valor predeterminado y 6 reglas activas entre tablas. |
+| Carga de datos ficticios | 19.034 filas en total, al menos 1.000 por tabla y los diez controles con el resultado esperado. |
+| Consultas del caso | Los conteos de Q01 a Q10 coinciden con los registrados en P05 y suman 15.780 filas. |
+| Reinicio | La vista previa confirmó la marca de la base de prueba. El borrado eliminó `DNV_Caso10_Reconstruccion` y `DNV_Caso10` quedó en estado `ONLINE`. |
+
+La marca permite comprobar que el reinicio apunta a la base creada para la prueba. `ONLINE` es el estado que SQL Server mostró para la base del video. [Vista previa del reinicio](../evidencias/capturas_o_resultados/P09_06_Reinicio_vista_previa.png) · [Resultado del borrado](../evidencias/capturas_o_resultados/P09_07_Reinicio_confirmado.png)
