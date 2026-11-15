@@ -80,3 +80,20 @@ En las condiciones, `>` significa «mayor que» y `>=` significa «mayor o igual
 ## Evidencia del paso 2
 
 La consulta de conteo devolvió 9 claves foráneas, 6 restricciones únicas, 26 comprobaciones y 1 valor predeterminado. Las capturas muestran el [conteo](../evidencias/capturas_o_resultados/P02_01_Conteo_restricciones.png) y un [extracto del detalle](../evidencias/capturas_o_resultados/P02_02_Detalle_visible.png). El listado de esta guía corresponde a las reglas definidas en el script. El extracto de SSMS muestra las primeras filas de la consulta. Las pruebas con datos válidos e inválidos y las reglas que comparan registros de tablas distintas se registran aparte.
+
+## Reglas que consultan otra tabla
+
+Una clave foránea comprueba que el registro relacionado exista. Cuando también necesito revisar un dato de ese registro, uso un **trigger**. Es un bloque que SQL Server ejecuta automáticamente al agregar o cambiar datos. Si encuentra una fila que incumple la regla, SQL Server rechaza la operación y muestra el motivo. El [script de reglas entre tablas](../scripts/sqlserver/02_reglas_entre_tablas.sql) instala los seis bloques.
+
+| Regla de SQL Server | Qué compruebo | Ejemplo para explicarla |
+|---|---|---|
+| `TR_Temporada_intervalo` | Si cambio las fechas de una temporada, sus ciclos deben seguir dentro del periodo. | Si un ciclo termina en mayo, no puedo acortar su temporada hasta abril. |
+| `TR_CicloCultivo_intervalos` | El ciclo debe quedar dentro de su temporada. Si cambio el ciclo, sus labores y cosechas deben seguir dentro de sus fechas. | Si una labor se hizo el 10 de abril, no puedo cerrar el ciclo el 5 de abril. |
+| `TR_Labor_fecha` | La fecha de la labor debe estar dentro del ciclo al que pertenece. | Si el ciclo inicia el 1 de marzo, una labor del 28 de febrero queda por fuera. |
+| `TR_Cosecha_fecha` | La fecha de la cosecha debe estar dentro del ciclo al que pertenece. | Si el ciclo termina el 31 de mayo, no puedo registrar una cosecha del 1 de junio para ese ciclo. |
+| `TR_ConsumoInsumo_cantidad_entera` | Si un insumo se mide en unidades, la cantidad usada debe ser entera. | Puedo registrar 2 unidades. Para ese mismo insumo, 2,5 unidades no cumplen la regla. |
+| `TR_Insumo_conservar_unidad` | Si el insumo ya tiene consumos, conservo la unidad para que las cantidades anteriores sigan teniendo el mismo significado. | Si se registró un consumo de 3 kg, no puedo cambiar la unidad del insumo a litros. |
+
+Las fechas del primer y del último día sí cuentan como parte del periodo. El bloque revisa todas las filas de una misma operación. En el código, `inserted` contiene los datos nuevos y `deleted` permite leer el valor que tenía un registro antes del cambio. Así puedo comparar, por ejemplo, la unidad anterior de un insumo con la unidad nueva.
+
+Germán ejecutó el archivo en SSMS el 14 de noviembre de 2026. La consulta de comprobación mostró **seis reglas con `Activa = Sí`**. Eso permite comprobar que quedaron habilitadas. En P03 registro por separado los intentos con fechas y unidades válidas e inválidas. [Captura de las seis reglas activas](../evidencias/capturas_o_resultados/P03_01_Reglas_activas.png)
