@@ -3,7 +3,7 @@
 **Parte I — Diseño de la base de datos y diccionario:** 11 de noviembre de 2026.  
 **Parte II — Implementación:** 18 de noviembre de 2026.
 
-En este documento explico las decisiones de mi diseño y los cálculos que planteo para las consultas. La implementación y las pruebas están pendientes para la Parte II.
+En este documento explico las decisiones del diseño y los cálculos que uso en las consultas. Los resultados se encuentran en el [registro de pruebas](pruebas.md).
 
 Tomo como guía **Proyecto integrador.pdf**: las reglas generales de las páginas 1–5 y el caso 10 de las páginas 24–26. Mi [esquema propuesto](../modelo/esquema.json) contiene diez tablas, 53 campos y nueve relaciones mediante claves foráneas, que conectan los registros de las tablas.
 
@@ -46,7 +46,7 @@ Solo sumo cantidades expresadas en la misma unidad.
 
 En mi diseño, mantengo la unidad de un insumo cuando ya tiene consumos registrados, para conservar el significado de las cantidades anteriores. Si necesito usar otra unidad, debo convertir la cantidad a la unidad del insumo o usar un registro diferente para ese insumo.
 
-El código y las pruebas de estas reglas están pendientes para la Parte II.
+La [guía de restricciones](restricciones_sqlserver.md) muestra cómo se aplican estas reglas en SQL Server.
 
 ### D05. Una fila de consumo por pareja labor e insumo
 
@@ -82,7 +82,7 @@ Para el ciclo, uso los estados `Activo`, `Finalizado` y `Cancelado`. Elijo `Acti
 
 Mientras el ciclo está activo, `fecha_fin` representa la fecha prevista de finalización. Al cerrar el ciclo, debo confirmar o corregir esa fecha sin que las labores o cosechas queden fuera del ciclo ni el ciclo fuera de su temporada.
 
-Para comparar fechas de una misma fila, incluyo `CHECK`, que comprueba una condición sobre sus datos. Comparar registros de distintas tablas necesita otro mecanismo. Su elección, el código y las pruebas están pendientes para la Parte II.
+Para comparar fechas de una misma fila uso `CHECK`, que comprueba una condición sobre sus datos. Para comparar fechas de registros relacionados uso reglas que SQL Server ejecuta cuando cambian los datos. [Reglas entre tablas y sus pruebas](pruebas.md#p03-reglas-entre-tablas)
 
 Incluyo estas comprobaciones al agregar registros o cambiar sus fechas o referencias, como el ciclo al que pertenece una labor. También las considero si cambian las fechas de una temporada o un ciclo, aunque una operación afecte varias filas.
 
@@ -104,15 +104,15 @@ No incluyo **borrado en cascada**, que borra automáticamente los registros rela
 
 Represento los estados, el tipo de labor, las unidades y la calidad mediante campos de las tablas. No creo tablas adicionales para estas clasificaciones, porque el ejercicio no necesita manejarlas por separado.
 
-Para los campos con una lista de valores permitidos, incluyo comprobaciones que impidan usar otros valores. Por ejemplo, el estado del ciclo admite `Activo`, `Finalizado` y `Cancelado`. El código y las pruebas de estas comprobaciones están pendientes para la Parte II.
+Para los campos con una lista de valores permitidos, uso comprobaciones que impiden guardar otros valores. Por ejemplo, el estado del ciclo admite `Activo`, `Finalizado` y `Cancelado`. [Guía de restricciones](restricciones_sqlserver.md)
 
 Para el tipo de labor, tengo previsto usar nombres claros y escribir de la misma forma cada actividad, sin limitar el campo a una lista fija de opciones.
 
-Mantengo `Cultivo` y `Temporada` como tablas independientes porque tienen sus propios datos y relaciones. Para ambas conservo el mínimo de 1.000 registros exigido por tabla. Sigue pendiente aclarar cómo cumplir esa cantidad con datos razonables para el caso.
+Mantengo `Cultivo` y `Temporada` como tablas independientes porque tienen sus propios datos y relaciones. La carga ficticia alcanza 1.000 filas en cada una. [Cómo se generan los datos](pruebas.md#p04-carga-de-datos-ficticios)
 
 ## 2. Definiciones para las consultas de producción y costo
 
-Defino los criterios que uso para calcular y comparar los resultados. El enunciado pide estas consultas, pero no establece sus fórmulas ni todos los criterios de comparación. Su implementación y sus pruebas están pendientes para la Parte II.
+Defino los criterios que uso para calcular y comparar los resultados. El enunciado pide estas consultas y los criterios de cálculo se detallan a continuación. [Resultados de las consultas](pruebas.md#p05-diez-consultas-del-caso)
 
 ### Producción y rendimiento
 

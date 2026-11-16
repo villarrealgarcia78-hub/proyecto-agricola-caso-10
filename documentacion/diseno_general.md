@@ -19,9 +19,9 @@ En los diagramas muestro los elementos del caso, sus datos y las relaciones entr
 
 En la Parte I, con entrega el 11 de noviembre de 2026, presento el modelo entidad-relación, el modelo relacional, la normalización, el diccionario de datos y las reglas de diseño. Con estos documentos explico cómo organizo la información de la base de datos.
 
-En la Parte II, con entrega el 18 de noviembre de 2026, tengo pendiente crear la base de datos y sus tablas en SQL Server, cargar los datos de prueba, preparar las diez consultas y comprobar las reglas de la base de datos y los resultados.
+La Parte II, con entrega el 18 de noviembre de 2026, reúne los scripts de SQL Server, los resultados de las diez consultas y las pruebas de reglas, carga y reconstrucción. El video explica y muestra la ejecución de las diez consultas. [Registro de pruebas](pruebas.md)
 
-También tengo pendiente preparar en MongoDB el registro de observaciones de campo sobre las labores agrícolas.
+El diseño inicial incluía observaciones de campo en MongoDB. Su implementación quedó fuera de la Parte II por indicación del profesor en clase.
 
 ## 3. Entidades propuestas
 
@@ -97,7 +97,7 @@ Para cada observación, incluyo en el diseño:
 
 Reservo SQL Server para los registros oficiales de ciclos, labores, inventarios y cosechas. MongoDB complementa esa información con las observaciones de campo.
 
-Guardar el identificador en MongoDB no crea una **clave foránea automática** entre las dos bases de datos. MongoDB no comprueba por sí solo que esa labor o ese ciclo exista en SQL Server. Por eso, dejo prevista la comprobación de cada referencia y la explicación de cómo se realiza. La creación de la colección y sus pruebas están pendientes.
+El diseño inicial contempla una revisión de cada identificador contra SQL Server, porque una referencia entre los dos sistemas requiere esa comprobación. Conservo el diseño de las observaciones como referencia. [Diseño de MongoDB](mongodb.md)
 
 ## 7. Fuentes
 

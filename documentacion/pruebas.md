@@ -14,7 +14,7 @@ La revisión de la Parte I corresponde a los documentos del diseño.
 Las reglas y los resultados esperados se basan en [reglas del negocio](reglas_negocio.md), [decisiones de diseño](decisiones_diseno.md) y la [matriz de requisitos](matriz_requisitos.md).
 ## Comprobaciones previstas
 
-Uso los códigos P01 a P09 para identificar cada prueba. En la tabla explico qué comprobaré, qué resultado espero y si la prueba ya se ejecutó.
+Uso los códigos P01 a P09 para identificar cada prueba. La tabla explica qué se comprueba, qué resultado espero y qué mostró cada prueba ejecutada.
 
 | Prueba | Qué comprobaré | Resultado esperado | Resultado obtenido |
 |---|---|---|---|
@@ -23,7 +23,7 @@ Uso los códigos P01 a P09 para identificar cada prueba. En la tabla explico qu�
 | P03 | Compruebo las fechas, las unidades y las cantidades al agregar o modificar registros. Incluyo cambios en los registros relacionados y operaciones que afectan varias filas a la vez. | Cada ciclo queda dentro de las fechas de su temporada, y cada labor y cosecha, dentro de su ciclo. Las semillas, las plantas y los insumos medidos en `unidad` usan cantidades sin decimales. La cantidad disponible y la consumida usan la unidad del insumo. Esa unidad se conserva si el insumo ya tiene consumos. Se rechazan los cambios que incumplen estas condiciones. | El 14 de noviembre de 2026, [los nueve casos probados cumplieron](#p03-reglas-entre-tablas). |
 | P04 | Compruebo cuántas filas hay por tabla y reviso las fechas, las cantidades y las relaciones de los datos ficticios. | Al menos 1.000 filas en cada una de las diez tablas, con datos variados y relacionados. | El 14 de noviembre de 2026, las diez tablas alcanzaron el mínimo y [los diez controles coincidieron](#p04-carga-de-datos-ficticios). |
 | P05 | Comparo las respuestas de las diez consultas con los resultados esperados. | Las respuestas coinciden con esos cálculos. La producción se expresa en kilogramos y el área se cuenta una vez por ciclo con cosecha. Los costos conservan el precio aplicado en cada consumo. Los promedios siguen los criterios descritos debajo de la tabla. Las consultas conservan los empates de mayor producción y no repiten cantidades al relacionar los datos. | Las diez salidas del 14 de noviembre de 2026 coinciden con lo esperado. [Resultados de P05](#p05-diez-consultas-del-caso). |
-| P06 | Revisaré las instrucciones usadas en las consultas y probaré casos sin actividad. | Las consultas incluyen filtros, orden, conteos, sumas, promedios, mínimos y máximos, agrupaciones, filtros de grupos, uniones de tablas y consultas dentro de otras. Distingo los lotes sin ciclos y los insumos nunca utilizados de los que no tienen actividad en una temporada. También compruebo los lotes sin siembras activas. | No ejecutado. |
+| P06 | Revisaré las instrucciones usadas en las consultas y probaré casos sin actividad. | Las consultas incluyen filtros, orden, conteos, sumas, promedios, mínimos y máximos, agrupaciones, filtros de grupos, uniones de tablas y consultas dentro de otras. Distingo los lotes sin ciclos y los insumos nunca utilizados de los que no tienen actividad en una temporada. También compruebo los lotes sin siembras activas. | Revisión interna pendiente. |
 | P07 | Pruebas de operaciones y consultas de MongoDB previstas en el enunciado inicial. | No aplica. | Fuera del alcance de esta entrega por indicación del profesor. |
 | P08 | Comprobación de referencias entre MongoDB y SQL Server prevista en el enunciado inicial. | No aplica. | Fuera del alcance de esta entrega por indicación del profesor. |
 | P09 | Compruebo que los scripts crean una base de prueba desde cero, cargan los datos y devuelven los conteos de las diez consultas. Uso un archivo aparte para probar el reinicio. | La reconstrucción termina con los resultados esperados y el reinicio elimina solo la base de prueba. | El 14 de noviembre de 2026, [la reconstrucción y el reinicio cumplieron lo esperado](#p09-reconstrucción-y-reinicio). |
@@ -34,7 +34,7 @@ Para P06, revisaré las instrucciones `SELECT`, `WHERE`, `ORDER BY`, `COUNT`, `S
 
 ## Registro de resultados
 
-Cuando ejecute cada prueba, registraré:
+En este registro indico los datos que permiten revisar cada prueba.
 
 - La fecha de la prueba.
 - La regla o consulta que compruebo.

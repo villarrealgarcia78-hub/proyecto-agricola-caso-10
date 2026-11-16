@@ -3,7 +3,7 @@
 **Parte I — Diseño y diccionario:** 11 de noviembre de 2026.  
 **Parte II — Implementación:** 18 de noviembre de 2026.
 
-En este documento presento las reglas que debe cumplir mi base de datos y explico cómo las represento en mi diseño. La creación de las tablas, la carga de datos y las pruebas en SQL Server están pendientes para la Parte II.
+En este documento presento las reglas que debe cumplir mi base de datos y explico los controles que uso en SQL Server. Los casos y sus resultados están en el [registro de pruebas](pruebas.md).
 
 Tomo como guía **Proyecto integrador.pdf**: las reglas generales de las páginas 1–5 y el caso 10 de las páginas 24–26. Mi [esquema propuesto](../modelo/esquema.json) contiene diez tablas, 53 campos y nueve relaciones mediante claves foráneas, que conectan los registros de las tablas.
 
@@ -18,7 +18,7 @@ Distingo dos tipos de indicaciones:
 
 Por ejemplo, el enunciado establece un estado inicial predeterminado para cada ciclo. En mi diseño elijo `Activo` y lo defino con `DEFAULT`, que asigna ese valor cuando no indico un estado al crear el registro.
 
-Las **restricciones** son condiciones que SQL Server comprueba al guardar o modificar los datos. En esta parte del proyecto defino esas condiciones y la forma prevista de aplicarlas.
+Las **restricciones** son condiciones que SQL Server comprueba al guardar o modificar los datos. Aquí explico cómo se aplican a las reglas del caso.
 
 ## 2. Reglas expresas del caso y su representación
 
@@ -39,11 +39,11 @@ En esta tabla presento las diez reglas del enunciado y explico cómo las represe
 
 Las reglas R01 a R04 corresponden a la página 24 de **Proyecto integrador.pdf**, y las reglas R05 a R10, a la página 25. En [decisiones de diseño](decisiones_diseno.md) explico por qué relaciono cada labor con un ciclo y los demás detalles que elijo para mi modelo.
 
-## 3. Mecanismos previstos para la Parte II
+## 3. Mecanismos usados en la Parte II
 
-En la Parte II tengo pendiente crear estas reglas en SQL Server y probarlas. Para ello, incluyo en mi diseño los siguientes mecanismos:
+Uso estas instrucciones para que SQL Server compruebe las reglas cuando se guardan datos.
 
-| Qué necesito definir o comprobar | Mecanismo previsto y para qué sirve |
+| Qué necesito definir o comprobar | Mecanismo y para qué sirve |
 |---|---|
 | Identificar cada fila y cada pareja de labor e insumo. | `PRIMARY KEY`, o clave primaria, identifica cada registro con un valor o una combinación de valores que no se repite y no admite `NULL`, es decir, ausencia de un dato. |
 | Relacionar un registro con otro que existe. | `FOREIGN KEY`, o clave foránea, comprueba que la referencia corresponda a un registro existente en la tabla relacionada. |
@@ -52,7 +52,7 @@ En la Parte II tengo pendiente crear estas reglas en SQL Server y probarlas. Par
 | Comprobar cantidades, áreas y duraciones mayores que cero, costos mayores o iguales a cero, listas de valores permitidos y fechas de una misma fila. | `CHECK` comprueba condiciones, como que un área sea mayor que cero, que un costo sea mayor o igual que cero, que un estado esté entre los valores permitidos o que la fecha de inicio no sea posterior a la fecha final. |
 | Asignar el estado inicial de un ciclo. | `DEFAULT` define un valor que se asigna cuando no indico uno al crear el registro. En mi diseño, el estado inicial es `Activo`. |
 
-También tengo previstas dos comprobaciones que necesitan consultar otras tablas:
+Estas comprobaciones necesitan consultar otras tablas.
 
 1. **Fechas relacionadas.** Cada ciclo debe quedar dentro de las fechas de su temporada, y cada labor y cosecha, dentro de las fechas de su ciclo. Incluyo la revisión al agregar registros y al cambiar sus fechas o referencias. También considero los cambios en la temporada o el ciclo al que pertenecen.
 
@@ -60,20 +60,20 @@ También tengo previstas dos comprobaciones que necesitan consultar otras tablas
 
 Un `CHECK` simple sobre una fila no basta para estas dos comprobaciones, porque necesito consultar registros de otras tablas. Las comprobaciones deben considerar las operaciones que afectan varias filas a la vez e impedir que se guarden cambios que incumplen las reglas.
 
-Tengo pendiente elegir cómo realizar estas comprobaciones. El código y las pruebas corresponden a la Parte II.
+Uso reglas que SQL Server ejecuta cuando se agregan o se cambian los registros relacionados. En la [guía de restricciones](restricciones_sqlserver.md#reglas-que-consultan-otra-tabla) explico las seis reglas activas. [Resultados de P03](pruebas.md#p03-reglas-entre-tablas)
 
 ## 4. Cantidades de datos y complemento documental
 
 En mi diseño mantengo el requisito de **al menos 1.000 registros (filas) de datos ficticios por cada tabla de SQL Server**, incluidas `Cultivo`, `Temporada` y `ConsumoInsumo`. Los datos deben ser variados y coherentes entre sí, sin repetir filas solo para completar la cantidad. Este requisito aparece en las páginas 2, 25 y 29 de **Proyecto integrador.pdf**.
 
-Tengo pendiente aclarar cómo cumplir esta cantidad en `Cultivo` y `Temporada` con datos razonables para el caso. Mientras esa aclaración está pendiente, mantengo el mínimo de 1.000 filas en ambas tablas.
+La carga genera 1.000 variedades al combinar tipos de cultivo, duraciones y características. También genera 1.000 temporadas ficticias distribuidas por semestre y zona. [Resultados de P04](pruebas.md#p04-carga-de-datos-ficticios)
 
-Para MongoDB, incluyo en mi diseño la colección `observaciones_labor`, que agrupa los registros de las observaciones de campo. En MongoDB, estos registros se llaman **documentos**. El mínimo es de **tres documentos de prueba**, con datos ficticios y coherentes.
+El enunciado inicial pide un mínimo de **tres documentos de prueba** en MongoDB. El diseño de la colección `observaciones_labor` reúne los registros de las observaciones de campo. En MongoDB estos registros se llaman **documentos**.
 
 En cada documento, mi diseño incluye la referencia a una labor o a un ciclo de SQL Server, la fecha y la hora, el tipo de observación, los valores con sus unidades y la ubicación dentro del lote cuando corresponde.
 
 Los registros oficiales de labores, ciclos, inventarios y cosechas corresponden a SQL Server. También incluyo la comprobación de que cada referencia de MongoDB corresponda a una labor o a un ciclo existente. MongoDB no verifica por sí mismo esa relación con SQL Server.
 
-La carga de datos, la creación de la colección y las pruebas están pendientes para la Parte II. Las pruebas de MongoDB incluyen agregar, consultar y modificar documentos, y eliminar un documento adicional de prueba.
+La implementación y las pruebas de MongoDB quedaron fuera de la Parte II por indicación del profesor en clase.
 
 En el [plan de pruebas](pruebas.md) presento las comprobaciones previstas. En el [documento de MongoDB](mongodb.md) explico la información y las operaciones previstas para las observaciones de campo.

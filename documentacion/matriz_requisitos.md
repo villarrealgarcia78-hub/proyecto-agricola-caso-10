@@ -3,17 +3,17 @@
 **Parte I — Diseño y diccionario:** 11 de noviembre de 2026.  
 **Parte II:** 18 de noviembre de 2026.
 
-En esta matriz relaciono los requisitos del caso con las tablas del modelo, las reglas que deben cumplir los datos y las consultas previstas.
+En esta matriz relaciono los requisitos del caso con las tablas, las reglas de los datos y las consultas de SQL Server.
 
-El diseño corresponde a la Parte I. La implementación y las pruebas de SQL Server y MongoDB están pendientes para la Parte II.
+El diseño corresponde a la Parte I. La Parte II reúne los scripts y las pruebas de SQL Server. MongoDB quedó fuera de esta entrega por indicación del profesor en clase.
 
 Fuentes: enunciado del profesor (`Proyecto integrador.pdf`), páginas 1 a 5, 24 a 26, 28 y 29; [esquema del modelo](../modelo/esquema.json), [reglas de negocio](reglas_negocio.md) y [decisiones de diseño](decisiones_diseno.md).
 
 ## 1. Las diez reglas específicas
 
-En esta tabla relaciono las diez reglas del caso con los datos y los controles que incluyo en mi diseño. Uso los códigos R01 a R10 para identificar las reglas. Las pruebas están pendientes para la Parte II.
+En esta tabla relaciono las diez reglas del caso con los datos y los controles que incluyo en el proyecto. Uso los códigos R01 a R10 para identificar las reglas. El [registro de pruebas](pruebas.md) indica los casos que se ejecutaron y su resultado.
 
-| Regla y fuente | Requisito | Cómo lo represento | Qué tengo pendiente probar |
+| Regla y fuente | Requisito | Cómo lo represento | Qué se comprueba |
 |---|---|---|---|
 | R01, p. 24 | Código único de predio, código de lote único dentro de su predio y áreas mayores que cero. | Uso `UNIQUE`, que impide repeticiones, para `Predio.codigo_predio` y la pareja `id_predio` y `codigo_lote` de `Lote`. Uso `CHECK`, que comprueba condiciones sobre los datos de una fila, para las áreas `area_ha`. Cada lote hace referencia a un predio existente. | Rechazar códigos de predio repetidos, lotes repetidos dentro del mismo predio, referencias inexistentes y áreas iguales o menores que cero. Admitir el mismo código de lote en predios distintos y áreas mayores que cero. |
 | R02, p. 24 | Tipos de cultivo y temporadas con códigos únicos y fechas coherentes. | En `Cultivo.codigo_cultivo` y `Temporada.codigo_temporada` uso `UNIQUE`. En `Temporada`, uso `CHECK` para que `fecha_inicio` sea anterior o igual a `fecha_fin`. Las fechas de siembra están en `CicloCultivo`. | Rechazar códigos repetidos y fechas invertidas. Admitir fechas de inicio y final iguales o en el orden correcto. |
@@ -26,9 +26,9 @@ En esta tabla relaciono las diez reglas del caso con los datos y los controles q
 | R09, p. 25 | Fechas coherentes, cantidades, áreas y duraciones mayores que cero, y estado inicial del ciclo. | Uso `CHECK` para condiciones de una misma fila y comprobaciones entre tablas para las fechas relacionadas. En `CicloCultivo.estado`, uso `DEFAULT`, que asigna `Activo` cuando no indico un estado al crear el registro. Los costos sí admiten cero. | Probar fechas válidas e inválidas y valores iguales o menores que cero donde exijo valores positivos. Comprobar el estado inicial al omitirlo y rechazar estados distintos de `Activo`, `Finalizado` y `Cancelado`. |
 | R10, p. 25 | Permitir lotes sin siembras activas e insumos no utilizados durante una temporada. | Permito lotes sin ciclos e insumos sin consumos. Para revisar una temporada, relaciono `Lote` con `CicloCultivo`, e `Insumo` con `ConsumoInsumo`, `Labor` y `CicloCultivo`. Un lote o insumo puede tener historial y no tener actividad en la temporada consultada. | Preparar lotes sin ciclos, lotes sin ciclos activos e insumos sin consumos. También probar lotes e insumos con registros de otras temporadas para comprobar el filtro de la temporada consultada. |
 
-Todos los campos son obligatorios en mi diseño. Tengo pendiente probar los datos válidos e inválidos y comprobar que no se guarden registros que incumplen estas reglas.
+Todos los campos son obligatorios. El registro de pruebas describe los casos con datos válidos y los casos que SQL Server rechazó. [Pruebas de restricciones](pruebas.md#comprobación-de-restricciones-con-datos-ficticios)
 
-Para las fechas relacionadas y los consumos en unidades enteras, necesito consultar otras tablas. Tengo pendiente elegir el mecanismo para estas comprobaciones. Incluyo las operaciones de agregar o modificar registros, los cambios en los datos relacionados y las operaciones que afectan varias filas. Mantengo la unidad del insumo cuando ya tiene consumos, como explico en D04.
+Para revisar las fechas relacionadas y los consumos en unidades enteras uso reglas que SQL Server ejecuta al agregar o cambiar datos. Incluyo los cambios en los registros relacionados y las operaciones que afectan varias filas. Mantengo la unidad del insumo cuando ya tiene consumos, como explico en D04. [Pruebas de reglas entre tablas](pruebas.md#p03-reglas-entre-tablas)
 
 En [reglas del negocio](reglas_negocio.md) y [decisiones de diseño](decisiones_diseno.md) explico estos controles y las decisiones D02, D04 y D06.
 
@@ -80,7 +80,7 @@ Defino diez claves primarias, una por tabla, para identificar sus filas. Nueve u
 
 Todos los campos son obligatorios. Esto no obliga a que cada predio tenga lotes ni a que cada lote tenga ciclos. Si registro un lote, debo indicar un predio existente; si registro un ciclo, debo indicar su lote, cultivo y temporada.
 
-La creación de las tablas y las pruebas están pendientes para la Parte II.
+Los scripts de la Parte II crean las diez tablas y las nueve claves foráneas. [Resultado de la reconstrucción](pruebas.md#p09-reconstrucción-y-reinicio)
 
 ## 4. Requisitos generales y estado de la entrega
 
@@ -90,15 +90,15 @@ En esta tabla separo lo que pide la guía, cómo lo incluyo en mi proyecto y su 
 |---|---|---|---|
 | G01 | Modelo entidad-relación (E-R), modelo relacional y normalización hasta la tercera forma normal (3FN), cuando corresponde. Los modelos incluyen campos, identificadores, relaciones, cardinalidad y participación. | Presento ambos modelos y explico la normalización. La cardinalidad indica cuántos registros pueden relacionarse; la participación indica si esa relación es obligatoria u opcional. | Parte I: modelos y normalización preparados. |
 | G02 | Un diccionario que explique el significado, el tipo de dato, si el campo es obligatorio, las claves y las reglas. | El diccionario describe los 53 campos del modelo. Su contenido tiene una comprobación documental contra el esquema y el modelo relacional. | Parte I: diccionario completo y comprobado documentalmente. |
-| G03 | SQL Server como componente principal, con archivos separados que permitan crear y reconstruir la base de datos. | Tengo previstos archivos con instrucciones, llamados scripts, para crear la estructura, aplicar las reglas, cargar los datos y realizar las consultas. | Parte II: creación y ejecución de los scripts pendientes. |
+| G03 | SQL Server como componente principal, con archivos separados que permitan crear y reconstruir la base de datos. | Uso scripts separados para crear las tablas, aplicar las reglas, cargar los datos y ejecutar las consultas. | Scripts disponibles y reconstrucción comprobada. [Guía de ejecución](../scripts/sqlserver/README.md) |
 | G04 | Al menos 1.000 registros ficticios, variados y coherentes por cada tabla de SQL Server. | Incluyo las diez tablas, también `Cultivo`, `Temporada` y `ConsumoInsumo`. Los datos deben corresponder al caso y relacionarse correctamente. | Las diez tablas alcanzan el mínimo. Los conteos de SSMS suman 19.034 filas. [Resultados de P04](pruebas.md#p04-carga-de-datos-ficticios). |
 | G05 | Consultas con filtros, orden, cálculos, agrupaciones, uniones y subconsultas, junto con la explicación de sus resultados. | Uso las técnicas que explico debajo de esta tabla. Por ejemplo, en Q03 uso `MIN` para mostrar la primera fecha de labor y en Q10 uso `HAVING` para incluir los predios con cosecha. | Las diez salidas de SSMS coinciden con lo esperado. [Resultados de P05](pruebas.md#p05-diez-consultas-del-caso). |
-| G06 | Probar operaciones válidas e inválidas y comparar el resultado esperado con el obtenido. | El plan de pruebas incluye datos correctos y datos que incumplen las reglas. En cada prueba registraré la regla revisada, los pasos, el resultado esperado y el resultado obtenido. También comprobaré las cantidades de registros y la creación completa desde cero. | Parte II: pruebas y registro de resultados pendientes. |
-| G07 | Un script separado de limpieza o reinicio, con advertencia de borrado, e instrucciones para reconstruir la base desde cero. | Prepararé el script con la advertencia correspondiente. El README indicará el entorno, las versiones, el orden de ejecución y las comprobaciones. | Parte II: script e instrucciones definitivas pendientes de crear y probar. |
-| G08 | Un repositorio Git con commits descriptivos y una bitácora individual. | La bitácora contiene los avances documentales. Usaré commits, que guardan versiones de los archivos con un mensaje que describe el cambio. Registraré mis actividades reales en la bitácora. | Bitácora preparada. Repositorio Git, commits y registro individual de actividades pendientes. |
-| G09 | MongoDB como complemento obligatorio, con al menos tres documentos ficticios y coherentes. Agregar, consultar, modificar y eliminar documentos, comprobando los resultados, y realizar una consulta que aproveche su estructura. | Tengo definido el alcance de la colección `observaciones_labor`. Cada documento es un registro con referencia a una labor o un ciclo, fecha y hora, tipo de observación, valores y unidades, y ubicación cuando corresponde. | Parte II: colección, carga de documentos, consultas y pruebas pendientes. |
-| G10 | Explicar cómo se comprueba que las referencias de MongoDB correspondan a registros de SQL Server. | Comprobaré que cada identificador de labor o ciclo exista en SQL Server y guardaré el resultado de esa revisión. Guardar el identificador en MongoDB no crea una clave foránea automática entre los dos sistemas. | Parte II: mecanismo de comprobación y evidencia pendientes. |
-| G11 | Sustentación individual y declaración del apoyo de inteligencia artificial cuando corresponda. | Explicaré el modelo, las decisiones, el código, las consultas y el complemento de MongoDB. Conservo la declaración breve de apoyo incluida en el README. | Declaración incluida. Sustentación individual pendiente. |
+| G06 | Probar operaciones válidas e inválidas y comparar el resultado esperado con el obtenido. | Comparo lo que esperaba con lo que mostró SSMS en cada caso registrado. | Cumplieron los 8 casos de restricciones y los 9 de reglas entre tablas. Queda pendiente P06, la revisión interna de las técnicas SQL y los casos sin actividad. [Registro de pruebas](pruebas.md) |
+| G07 | Un script separado de limpieza o reinicio, con advertencia de borrado, e instrucciones para reconstruir la base desde cero. | Uso una base de prueba y un archivo de reinicio que exige su marca y una confirmación de borrado. | Reconstrucción, vista previa y borrado comprobados. [Resultados de P09](pruebas.md#p09-reconstrucción-y-reinicio) |
+| G08 | Un repositorio Git con commits descriptivos y una bitácora individual. | Los commits guardan versiones con un mensaje que explica cada cambio. En la bitácora reúno los avances comprobados. | Repositorio e historial disponibles. Queda pendiente completar el registro individual con las actividades realizadas. [Bitácora](../BITACORA.md) |
+| G09 | El enunciado inicial pide agregar, consultar, modificar y eliminar documentos de prueba en MongoDB. | El diseño inicial explica la colección `observaciones_labor`, que reúne observaciones de campo. | Fuera del alcance de la Parte II por indicación del profesor en clase. [Diseño de MongoDB](mongodb.md) |
+| G10 | El enunciado inicial pide comprobar que las referencias de MongoDB correspondan a registros de SQL Server. | El diseño inicial contempla consultar en SQL Server los identificadores de las labores o los ciclos referidos. | Fuera del alcance de la Parte II por indicación del profesor en clase. |
+| G11 | Sustentación individual y declaración del apoyo de inteligencia artificial cuando corresponda. | En el video mostraré cómo se ejecutan las diez consultas, explicaré su lógica y leeré un resultado de cada una. | Declaración incluida en el README. Video de máximo 10 minutos pendiente de grabar. |
 
 En las consultas de G05 uso estas instrucciones y funciones:
 
@@ -117,7 +117,7 @@ En las consultas de G05 uso estas instrucciones y funciones:
 | `JOIN` | Relacionar datos de distintas tablas. |
 | Subconsulta | Usar una consulta dentro de otra. |
 
-Una vista es una consulta guardada que puedo consultar como una tabla. Incluiré vistas si aportan algo útil al caso. Tengo pendiente comprobar el uso de todas las técnicas y explicar qué significan los resultados obtenidos.
+Una vista es una consulta guardada que puedo consultar como una tabla. Los resultados de las diez consultas ya están registrados. La revisión interna de las técnicas y los casos sin actividad corresponde a P06. [Resultados de P05](pruebas.md#p05-diez-consultas-del-caso)
 
 En MongoDB, las operaciones de agregar, consultar, modificar y eliminar se conocen como CRUD. Tengo previstas una consulta con filtro y otra que use un dato agrupado dentro de una observación. Para probar la eliminación, usaré un documento adicional de prueba y comprobaré que se elimine, conservando los tres documentos requeridos.
 
@@ -125,6 +125,6 @@ En MongoDB, las operaciones de agregar, consultar, modificar y eliminar se conoc
 
 El esquema contiene diez tablas, 53 campos y nueve relaciones. La comprobación documental muestra cómo estos elementos representan los datos necesarios para las diez reglas y las diez preguntas del caso, según las decisiones explicadas en esta matriz.
 
-Esta comprobación corresponde al diseño. En la Parte II tengo pendiente crear y probar las restricciones, comprobar los resultados de las consultas y verificar que la base de datos se pueda reconstruir desde cero.
+Esta comprobación corresponde al diseño. Las pruebas de la Parte II muestran los resultados de las restricciones, las consultas y la reconstrucción. [Registro de pruebas](pruebas.md)
 
 Para `Cultivo` combino tipos de cultivo, duraciones y características para formar variedades ficticias. Para `Temporada` uso semestres por zona. El [registro de P04](pruebas.md#p04-carga-de-datos-ficticios) muestra cómo se forman esos datos y cuántas filas tiene cada tabla.
