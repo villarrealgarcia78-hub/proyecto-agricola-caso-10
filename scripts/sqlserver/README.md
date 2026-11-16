@@ -2,23 +2,21 @@
 
 En esta carpeta guardo los scripts que uso para crear y comprobar la base de datos de la Parte II.
 
-Los scripts de creación y restricciones están disponibles. El 14 de noviembre de 2026, la comprobación en SSMS mostró **10 tablas y 53 campos** en la base `DNV_Caso10`.
+Las pruebas en SSMS se hicieron con SQL Server 2022, versión `16.0.4315.2`. La comprobación del 14 de noviembre de 2026 mostró **10 tablas y 53 campos** en `DNV_Caso10`, la base del video.
 
 Este es el orden de los scripts de la Parte II.
 
-| Orden previsto | Archivo | Para qué sirve |
+| Orden de ejecución | Archivo | Para qué sirve |
 |---|---|---|
 | 1 | [01_crear_base_y_tablas.sql](01_crear_base_y_tablas.sql) | Crear la base de datos del ejercicio y las tablas del modelo. |
 | 2 | [02_restricciones_y_reglas.sql](02_restricciones_y_reglas.sql) | Definir las reglas que deben cumplir los datos, como identificadores únicos, referencias entre tablas y valores permitidos. |
-| 3 | [03_datos_semilla.sql](03_datos_semilla.sql) | Cargar datos ficticios, variados y relacionados, con al menos 1.000 filas por cada tabla. |
-| 4 | [04_consultas_negocio.sql](04_consultas_negocio.sql) | Resolver las diez preguntas de negocio y explicar los resultados. |
-| 5, si aplica | `05_vistas.sql` | Crear vistas, que son consultas guardadas, si resultan útiles para el caso. |
+| 3 | [02_reglas_entre_tablas.sql](02_reglas_entre_tablas.sql) | Aplicar las reglas que comparan fechas o unidades de datos relacionados. |
+| 4 | [03_datos_semilla.sql](03_datos_semilla.sql) | Cargar datos ficticios, variados y relacionados, con al menos 1.000 filas por cada tabla. |
+| 5 | [04_consultas_negocio.sql](04_consultas_negocio.sql) | Resolver las diez preguntas de negocio y mostrar los resultados. |
 
-Si una consulta utiliza una vista, crearé primero esa vista.
+En SSMS abro cada archivo y ejecuto el contenido completo con **F5**. Reviso el resultado antes de seguir con el próximo.
 
-También prepararé un archivo separado de reinicio o limpieza. Explicaré qué elimina e incluiré una advertencia de borrado.
-
-Añadiré los comandos de instalación, ejecución y reconstrucción después de probarlos en mi equipo. También indicaré las versiones utilizadas y el orden para crear la base desde cero.
+Para empezar desde cero, uso la [guía de reconstrucción](p09_reconstruccion/README.md). Incluye las copias para la base de prueba y el archivo de reinicio con la advertencia de borrado. [Resultado de P09](../../documentacion/pruebas.md#p09-reconstrucción-y-reinicio)
 
 Usaré como referencia el [diccionario de datos](../../modelo/diccionario_datos.md), las [reglas de negocio](../../documentacion/reglas_negocio.md) y el [plan de pruebas](../../documentacion/pruebas.md).
 
